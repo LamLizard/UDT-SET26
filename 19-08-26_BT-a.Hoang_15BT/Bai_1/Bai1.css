@@ -1,0 +1,45 @@
+.page {
+    display: flex;
+    flex-direction: column;
+}
+
+.page .header {
+    background-color: rgb(235, 135, 228);
+    padding: 5px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.page .header h1 {
+    color: rgb(222, 25, 91);
+    font-size: 30px;
+}
+
+.page .page__content {
+    background-color: rgb(238, 245, 197);
+    padding: 10px;
+    text-align: center;
+}
+
+.page .page__content .poem-block {
+    margin: 20px 0px 20px 0px;
+    font-style: italic;
+    font-size: 20px;
+}
+
+.page .page__content .poem-block .para1 {
+    color: rgb(41, 48, 252);
+}
+
+.page .page__content .poem-block .para2 {
+    color: rgb(200, 39, 240);
+}
+
+.page .page__content .poem-block .para3 {
+    color: rgb(2, 111, 22);
+}
+
+.page .page__content .horizontal-line hr {
+    border: 1px solid rgb(0, 0, 0);
+    width: 400px;
+}
