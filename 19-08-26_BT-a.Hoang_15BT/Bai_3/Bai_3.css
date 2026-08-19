@@ -1,0 +1,48 @@
+.text-format {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.text-format__content {
+    max-width: 650px;
+    width: 100%;
+}
+
+.text-format__section {
+    margin-bottom: 20px;
+}
+
+.text-format__title {
+    color: #2f9f20c4;
+}
+
+.text-format__label {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.text-format__text {
+    font-style: italic;
+}
+
+.text-format__highlight {
+    color: red;
+    font-style: normal;
+}
+
+.text-format__code-box {
+  background-color: #c0bfbfcc;
+  padding: 15px;
+  color: blue;
+  padding-left: 50px;
+}
+
+.text-format__code-line {
+  margin: 0 0 10px 0;
+}
+
+
+.text-format__code-line--indent {
+  padding-left: 60px;
+}
