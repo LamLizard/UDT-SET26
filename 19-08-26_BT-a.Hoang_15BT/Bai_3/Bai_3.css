@@ -14,7 +14,7 @@
 }
 
 .text-format__title {
-    color: #2f9f20c4;
+    color: #00CC00;
 }
 
 .text-format__label {
@@ -32,7 +32,7 @@
 }
 
 .text-format__code-box {
-  background-color: #c0bfbfcc;
+  background-color: #cccccc;
   padding: 15px;
   color: blue;
   padding-left: 50px;
