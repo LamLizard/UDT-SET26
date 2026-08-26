@@ -1,0 +1,87 @@
+header{
+    border: 1px solid rgb(1, 181, 1);
+    padding: 1px;
+    text-align: center;
+    color: red;
+    font-size: 200%;
+    font-weight: bold;
+}
+
+header span{
+    border: 1px solid rgb(1, 181, 1);
+    display: flex;
+    justify-content: center;
+}
+
+#container1__content{
+    display: flex;
+    flex-direction: column;
+}
+
+#styleWord{
+    font-size: 300%;
+    font-style: italic;
+    color: rgb(1, 181, 1);
+}
+
+.container1{
+    display: flex;
+    margin-top: 30px;
+}
+
+#picture1{
+    margin-top: 10px;
+}
+
+
+.container2{
+    display: block;
+    margin-top: -50px;
+}
+
+#picture2{
+    float: left;
+    width: 250px;
+    height: 180px;
+    margin-right: 15px;
+    margin-bottom: 10px;
+}
+
+#highlight{
+    border-bottom: 1px solid black;
+    font-style: italic;
+    font-weight: bold;
+    background-color: orangered;
+    
+}
+
+#container3Infomation{
+    display: flex;
+    flex-direction: row;
+   
+}
+
+.container3{
+    display: flex;
+    flex-direction: column;
+}
+
+.content3, .content2, .content1{
+    width: 100%;
+}
+
+.readCommet{
+    text-align:end;
+    background-color:rgb(1, 181, 1);
+    color: white;
+    font-size: 200%;
+}
+
+#picture3 , #picture4 , #picture5{
+    width:100px
+}
+
+hr{
+    border:1px solid orangered;
+    width: 100%;
+}
