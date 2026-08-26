@@ -1,0 +1,106 @@
+body{
+    background-image:  url(./hinh/rose.png), url(./hinh/kim-tea-hee.png),url(./hinh/nen-hoa-hong.png);
+    background-color: rgb(168, 7, 7);
+    background-repeat: no-repeat;
+    background-position: 
+    6vw 32vw,
+    0vw 5vw,
+    60vw 35vw;
+    background-size: 
+    20vw,
+    25vw,
+    auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    top: 50px;
+}
+
+.main{
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border: 1px solid white;
+    width: 740px;
+}
+
+.title{
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+}
+
+img{
+    width:250px;
+    height: 200px;
+    background-color: plum;
+}
+
+.name #name__content:nth-child(1){
+    width: 490px;
+    height: 100px;
+    background-color: red;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    color: white;
+    font-size: 25px;
+}
+
+.name #name__content:nth-child(2){
+    width: 490px;
+    height: 100px;
+    background-color: plum;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 33px;
+    font-weight: bold;
+    color: red;
+}
+
+.contain{
+    display: flex;
+    flex-direction: row;
+    padding: 20px;
+}
+
+.promotion-title {
+    display: flex; 
+    align-items: center; 
+}
+
+.promotion-title .icon {
+    width: 10px;           
+    height: 10px;          
+    border: 2px solid rgb(255, 0, 0); 
+    margin-right: 8px; 
+    margin-bottom: 3px;    
+}
+
+.promotion-title h3 {
+    font-size: 1.1em;
+    font-weight: bold; 
+    color: red;
+}
+
+#contain__leftContent{
+    margin-right: 20px;
+}
+
+#contain__leftContent li {
+   color: rgb(255, 255, 255, 0.9);
+   margin: -5%;
+}
+
+#contain__rightContent li {
+    color: rgb(255, 255, 255, 0.9);
+    padding: 0px;
+}
+
+.promotion-box li {
+    line-height: 2; 
+ }
+ 

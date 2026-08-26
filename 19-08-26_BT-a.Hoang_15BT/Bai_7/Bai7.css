@@ -1,0 +1,65 @@
+body{
+    background-image: url(./hinh/nguyen-tac-trong-thiet-ke-do-hoa.jpg), url(./hinh/truong_day_thiet_ke_do_hoa.jpg);
+    background-repeat: repeat-x, no-repeat;
+    background-position: top, 15vh 50vh;
+    background-size: auto, 50vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 80vh;
+}
+
+.title{
+    color: rgb(5, 255, 5);
+    font-size: 35px;
+    font-weight: bold;
+}
+
+table {
+    width: 80%;
+    height: 25vw;
+    max-width: 600px;
+    border-collapse: separate;
+    border: 5px solid rgb(5, 255, 5);
+    
+}
+
+table thead tr th{
+    color: white;
+    background-color: rgb(5, 255, 5);
+}
+
+table thead tr:nth-child(1) th{
+    padding: 10px 5px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+table thead tr:nth-child(2) th{
+    padding: 5px 0px;
+}
+
+table tbody tr td{
+    border: 1px solid rgb(5, 255, 5);
+    padding: 10px, 10px;
+}
+
+tbody tr:nth-child(even) {
+    background-color:  rgb(58, 251, 209); /* Màu nền xen kẽ */
+}
+
+tbody td:nth-child(1){
+    text-align: center;
+}
+
+tbody td:nth-child(3){
+    text-align: center;
+}
+
+tbody td:nth-child(4){
+    text-align: center;
+}
+tbody tr.last-row{
+    background-color: #f68b33;
+}

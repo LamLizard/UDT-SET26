@@ -1,0 +1,28 @@
+body {
+  background-image: url(./hinh/background.gif);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.main{
+  background-color: black;
+}
+
+#content{
+  color: white;
+  margin-bottom: 20%;
+}
+
+footer{
+  color: white;
+}
+
+#borderAndColor{
+  color: red;
+  border-bottom:1px solid red ;
+}

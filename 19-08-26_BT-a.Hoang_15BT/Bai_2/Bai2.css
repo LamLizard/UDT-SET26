@@ -1,0 +1,46 @@
+body {
+    background-image: url(./hoang-hon-phu-quoc.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    color: white;
+}
+
+header p {
+    text-align: center;
+    color: yellow;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+header span {
+    font-style: italic;
+}
+
+.container1 #container__title{
+    font-weight: bold;
+    font-size: 20px;
+    color: red;
+}
+
+.container2 #container__title{
+    font-weight: bold;
+    font-size: 20px;
+    color: #db8400;
+}
+
+.container3 #container__title{
+    font-weight: bold;
+    font-size: 20px;
+    color: rgb(54, 255, 54);
+}
+
+.container4 #container__title{
+    font-weight: bold;
+    font-size: 20px;
+    color: rgb(255, 123, 209);
+}
+
+#container__content {
+    text-indent: 70px;
+    font-style: italic;
+}

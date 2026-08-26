@@ -1,0 +1,101 @@
+body{
+    background-image: url(./hinh/binh-hoa.jpg), url(./hinh/nen-hoa-hong.jpg);
+    background-repeat: no-repeat;
+    background-position: left, right;
+    background-size: auto 300px, 800px;
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+}
+
+.main{
+    display: flex;
+    flex-direction: column;
+}
+
+@font-face {
+    font-family: 'Wedding';
+    src: url(./fonts/UTM\ Wedding\ K&T.ttf);
+}
+
+header{
+    font-size: 400%;
+    font-family: 'Wedding';
+    color: white;
+    font-size: 4rem;
+    text-shadow: 
+    0 0 5px #fff,
+    0 0 10px #ff007f,
+    0 0 20px #ff007f,
+    0 0 30px #ff007f,
+    0 0 40px #ff007f;
+    margin-bottom: -30px;
+}
+
+#highlight{
+    background-color: #ff007f;
+    color: white;
+    font-weight: bold;
+    padding-bottom: -30cm;
+}
+
+.list{
+    margin-top: 0px;
+}
+
+#content1 ul {
+    list-style-type: none;
+    margin-left: -30px;
+}
+
+#content1 li::before{
+    content: '';
+    display: block;
+    background-image: url(./hinh/bullet-hoa-tim.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 20px;
+    height: 20px;
+
+}
+
+#content1 li {
+    display: flex; 
+    align-items: center;
+}
+
+#content2 ul {
+    list-style-type: none;
+    margin-left: -30px;
+}
+
+#content2 li::before{
+    content: '';
+    display: block;
+    background-image: url(./hinh/bullet-tron-hong.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 20px;
+    height: 20px;
+
+}
+
+#content2 li {
+    display: flex; 
+    align-items: center;
+}
+
+#address{
+    color: #ff007f;
+    font-style: italic;
+}
+
+#copyText{
+    color: purple;
+}
+
+hr{
+    width: 100%;
+}
