@@ -1,0 +1,58 @@
+body{
+    background-image: url('./hinh/login.jpg');
+    background-repeat: no-repeat;
+    background-position: 685px 250px;
+    background-size: 200px;
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container{
+    border: 2px dashed red;
+    padding: 20px 100px;   
+    border-radius: 10px;       
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); 
+    text-align: center;        
+    width: 360px;             
+}
+
+.container h1{ 
+    color: #d93025;    
+}
+
+.form-group {
+  margin-bottom: 20px; 
+  text-align: left;    
+}
+
+.formLogin input, .formPassword input{
+    background-color: rgb(242, 193, 193);
+    opacity: 0.7;
+    border-radius: 50px;
+    border: 2px dashed red;
+    margin: 5px;
+}
+
+.formPassword{
+    margin-left: 40px
+}
+
+button {
+  background-color: #d93025; 
+  color: white;              
+  border: none;             
+  padding: 5px 10px;      
+  font-size: 15px;           
+  font-weight: bold;        
+  border-radius: 20px;      
+  cursor: pointer;           
+  transition: background-color 0.3s ease; 
+  margin-top: 10px; 
+}
+
+button:hover {
+  background-color: #b7281e; 
+}
