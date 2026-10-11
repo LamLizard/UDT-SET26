@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todolist</title>
+    <style>
+        /* Whole page: center the form */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Form container */
+        .login-box {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        /* Title */
+        .login-box h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333333;
+        }
+
+        /* Input fields */
+        .login-box input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        /* Login button */
+        .login-box button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4a90e2;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Hover effect on the button */
+        .login-box button:hover {
+            background-color: #357ab8;
+        }
+    </style>
+</head>
+<body>
+    <form class="login-box">
+        <h1>Todolist</h1>
+
+        <!-- Username input -->
+        <input type="text" name="username" placeholder="Username" required>
+
+        <!-- Password input -->
+        <input type="password" name="password" placeholder="Password" required>
+
+        <!-- Submit button -->
+        <button type="submit">Login</button>
+    </form>
+
+    <script>
+        const SERVER = 'http://127.0.0.1:3000'
+
+        function handleLoginResponse(status, data) {
+            // 200 = đăng nhập thành công
+            if (status === 200) {
+                localStorage.setItem('accessToken', data.accessToken)
+                localStorage.setItem('userId', data.id)
+                console.log('Login successfully')
+                console.log(data.accessToken)
+                alert('Đăng nhập thành công!')
+                return
+            }
+
+            // 401 = sai username hoặc password
+            if (status === 401) {
+                alert(data.message || 'Sai tài khoản hoặc mật khẩu')
+                return
+            }
+
+            // Các lỗi HTTP khác
+            alert('Có lỗi xảy ra: ' + status)
+        }
+
+        // Login by XHR
+        function loginByXHR(username, password) {
+            const xhr = new XMLHttpRequest()
+            xhr.open('POST', SERVER + '/login')
+
+            xhr.setRequestHeader('Content-Type', 'application/json')
+            xhr.onload = function () {
+                let data = {}
+                try {
+                    data = JSON.parse(xhr.responseText)
+                } catch (error) {
+                    data = {}
+                }
+                handleLoginResponse(xhr.status, data)
+            }
+
+            xhr.onerror = function () {
+                alert('Không kết nối được server')
+            }
+
+            xhr.send(JSON.stringify({ username, password }))
+        }
+
+        // Login by fetch
+        async function loginByFetch(username, password) {
+            try {
+                const response = await fetch(SERVER + '/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                })
+
+                let data = {}
+                try {
+                    data = await response.json()
+                } catch (error) {
+                    data = {}
+                }
+
+                handleLoginResponse(response.status, data)
+            } catch (error) {
+                alert('Không kết nối được server')
+            }
+        }
+
+        document.querySelector('.login-box').addEventListener('submit', function (event) {
+            // Chặn hành vi mặc định của form (không cho tải lại trang)
+            event.preventDefault()
+
+            const username = document.querySelector('input[name="username"]').value
+            const password = document.querySelector('input[name="password"]').value
+
+            // Cách 1: dùng XHR
+            // loginByXHR(username, password)
+
+            // Cách 2: dùng fetch (bỏ comment dòng dưới nếu muốn dùng fetch)
+            loginByFetch(username, password)
+        })
+    </script>
+</body>
+</html>
