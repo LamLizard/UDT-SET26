@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Todo list - Assign Task</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../style/assign-task.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>Todo list</h1>
+    <div class="user-box">
+      <span id="userName"></span>
+      <button type="button" id="logoutBtn" class="secondary">Logout</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="panel">
+      <h2>Add Task</h2>
+      <form id="addForm" class="add-form" novalidate>
+        <input type="text" id="taskContent" placeholder="What needs to be done?" maxlength="100" required>
+        <button type="submit" id="addBtn">Add Task</button>
+      </form>
+      <p id="addMessage" class="message" role="alert"></p>
+    </section>
+
+    <section class="panel">
+      <h2>Task Management</h2>
+      <p id="listMessage" class="message" role="alert"></p>
+      <ul id="taskList" class="task-list"></ul>
+      <p id="emptyMessage" class="empty" hidden>No tasks yet.</p>
+    </section>
+  </main>
+  <script src="../script/assign-task.js"></script>
+</body>
+</html>

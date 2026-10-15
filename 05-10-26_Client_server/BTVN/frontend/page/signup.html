@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Todo list - Sign up</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../style/signup.css">
+</head>
+<body>
+  <main class="card">
+    <h1>Todo list</h1>
+    <p id="message" class="message" role="alert"></p>
+
+    <form id="signupForm" novalidate>
+      <input type="text" id="name" placeholder="Display name" maxlength="50" autocomplete="name" required>
+      <input type="email" id="email" placeholder="Email" autocomplete="username" required>
+      <input type="password" id="password" placeholder="Password" maxlength="20" autocomplete="new-password" required>
+      <small class="hint">8-20 characters, with an uppercase letter, a lowercase letter and a special character.</small>
+      <button type="submit" id="signupBtn">Sign up</button>
+    </form>
+
+    <a class="link" href="../page/login.html">Login</a>
+  </main>
+  <script src="../script/signup.js"></script>
+</body>
+</html>
