@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Todo list - Login</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../style/login.css">
+</head>
+<body>
+  <main class="card">
+    <h1>Todo list</h1>
+    <p id="message" class="message" role="alert"></p>
+
+    <form id="loginForm" novalidate>
+      <input type="email" id="email" placeholder="Email" autocomplete="username" required>
+      <input type="password" id="password" placeholder="Password" autocomplete="current-password" required>
+      <button type="submit" id="loginBtn">Login</button>
+    </form>
+
+    <button type="button" id="resendBtn" class="secondary" hidden>Resend verification email</button>
+    <a class="link" href="../page/signup.html">Sign up</a>
+  </main>
+  <script src="../script/login.js"></script>
+</body>
+</html>

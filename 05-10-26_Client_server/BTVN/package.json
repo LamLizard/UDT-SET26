@@ -1,0 +1,17 @@
+{
+  "name": "todo-list",
+  "version": "1.0.0",
+  "description": "Simple Todo List website: basic Node.js, CSV storage, JWT auth, Gmail SMTP verification",
+  "main": "backend/src/server.js",
+  "scripts": {
+    "start": "node --env-file=.env backend/src/server.js"
+  },
+  "engines": { "node": ">=20.6.0" },
+  "license": "MIT",
+  "dependencies": {
+    "csv-parse": "^5.6.0",
+    "csv-stringify": "^6.5.2",
+    "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^6.9.16"
+  }
+}
