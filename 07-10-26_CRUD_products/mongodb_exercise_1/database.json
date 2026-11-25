@@ -1,0 +1,13 @@
+{
+  "products": [
+    { "id": 1, "name": "Bàn phím", "price": 300 },
+    { "id": 2, "name": "Chuột", "price": 150 },
+    { "id": 3, "name": "Màn hình", "price": 2000 },
+    { "id": 5, "name": "Loa", "price": 850 },
+    { "id": 6, "name": "Webcam", "price": 700 },
+    { "id": 8, "name": "Loa", "price": 850 },
+    { "id": 9, "name": "Webcam", "price": 700 },
+    { "id": 11, "name": "Loa", "price": 850 },
+    { "id": 12, "name": "Webcam", "price": 700 }
+  ]
+}
