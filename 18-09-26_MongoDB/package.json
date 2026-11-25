@@ -1,0 +1,21 @@
+{
+  "name": "udt-set26-mongodb",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bai tap MongoDB 18-09-26: CRUD products/customers/orders + 3 bao cao aggregate",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "setup": "node scripts/setup-db.js && node scripts/seed.js",
+    "seed": "node scripts/seed.js",
+    "test": "node --test \"test/**/*.test.js\""
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongodb": "^6.8.0"
+  }
+}
