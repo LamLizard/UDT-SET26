@@ -4,7 +4,7 @@ const { ObjectId } = require('mongodb');
 const db = require('../db');
 const { COLLECTIONS } = require('../data-sources/mongo-data-source');
 
-const ORDER_STATUSES = ['PENDING', 'CONFIRMED', 'SHIPPED', 'CANCELLED'];
+const ORDER_STATUSES = ['PENDING', 'PAID', 'CANCELLED'];
 
 function httpError(message, status, code) {
   const err = new Error(message);

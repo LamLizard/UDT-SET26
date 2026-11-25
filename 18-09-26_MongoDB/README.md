@@ -80,7 +80,7 @@ Gặp lỗi `MongoServerSelectionError ... ECONNREFUSED 127.0.0.1:27017` nghĩa 
 | POST | `/orders` | Tạo đơn — chép **snapshot** `name` + `price`, kiểm tra và trừ tồn kho (thiếu hàng → `409 OUT_OF_STOCK`, rollback nếu lỗi giữa chừng) |
 | GET | `/orders?page=1&limit=10&status=PENDING` | Danh sách đơn + phân trang + `total` |
 | GET | `/orders/:code` | Lấy đơn theo `code` |
-| PATCH | `/orders/:code/status` | Cập nhật trạng thái (`PENDING`/`CONFIRMED`/`SHIPPED`/`CANCELLED`) |
+| PATCH | `/orders/:code/status` | Cập nhật trạng thái (`PENDING` / `PAID` / `CANCELLED`) |
 | GET | `/reports/orders` | Báo cáo từng đơn (`$lookup` khách hàng) |
 | GET | `/reports/order-buckets` | Phân loại đơn `<50k` / `50k–100k` / `>100k` |
 | GET | `/reports/revenue-by-customer` | Doanh thu theo khách (làm thêm) |
@@ -142,7 +142,7 @@ Mã lỗi: `400` body sai / vi phạm `$jsonSchema` (code 121), `404` không tì
   {
     "code": "O0004",
     "total": 300000,
-    "status": "CONFIRMED",
+    "status": "PAID",
     "createdAt": "2026-09-22T09:00:00.000Z",
     "itemCount": 3,
     "lineCount": 2,
@@ -151,7 +151,7 @@ Mã lỗi: `400` body sai / vi phạm `$jsonSchema` (code 121), `404` không tì
   {
     "code": "O0003",
     "total": 45000,
-    "status": "SHIPPED",
+    "status": "PAID",
     "createdAt": "2026-09-21T09:00:00.000Z",
     "itemCount": 1,
     "lineCount": 1,
@@ -169,7 +169,7 @@ Mã lỗi: `400` body sai / vi phạm `$jsonSchema` (code 121), `404` không tì
   {
     "code": "O0001",
     "total": 165000,
-    "status": "CONFIRMED",
+    "status": "PAID",
     "createdAt": "2026-09-19T09:00:00.000Z",
     "itemCount": 2,
     "lineCount": 2,
@@ -305,7 +305,7 @@ await db.collection('products').createIndex({ code: 1 }, { unique: true, name: '
 
 Unique index được kiểm tra ở tầng database, nên **không phụ thuộc** vào việc code ứng dụng có kiểm tra hay không: insert/update trùng `code` sẽ bị MongoDB từ chối với lỗi `E11000 duplicate key error`. Server bắt `err.code === 11000` trong middleware xử lý lỗi và trả **HTTP 409** kèm `keyValue` cho client. Index này cũng tăng tốc tìm đơn theo `code` (đúng 1 lần đọc index thay vì quét collection).
 
-Ngoài ra `$jsonSchema` (validator `strict`, `validationAction: 'error'`) chặn document sai cấu trúc ngay khi ghi: ví dụ `orders.items[].price` phải là number ≥ 0, `status` chỉ được là một trong 4 giá trị, `total` bắt buộc. Lỗi này trả về code MongoDB `121` → HTTP 400.
+Ngoài ra `$jsonSchema` (validator `strict`, `validationAction: 'error'`) chặn document sai cấu trúc ngay khi ghi: ví dụ `orders.items[].price` phải là number ≥ 0, `status` chỉ được là một trong 3 giá trị (`PENDING` / `PAID` / `CANCELLED`), `total` bắt buộc. Lỗi này trả về code MongoDB `121` → HTTP 400.
 
 ## Test
 

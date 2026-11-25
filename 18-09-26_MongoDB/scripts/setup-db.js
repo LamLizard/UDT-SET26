@@ -3,7 +3,7 @@
 const db = require('../src/db');
 const { COLLECTIONS } = require('../src/data-sources/mongo-data-source');
 
-const ORDER_STATUSES = ['PENDING', 'CONFIRMED', 'SHIPPED', 'CANCELLED'];
+const ORDER_STATUSES = ['PENDING', 'PAID', 'CANCELLED'];
 
 // ---------------------------------------------------------------------------
 // $jsonSchema cua 3 collection

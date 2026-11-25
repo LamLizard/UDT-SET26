@@ -21,10 +21,10 @@ const CUSTOMERS = [
 
 // items: [ma san pham, so luong]
 const ORDERS = [
-  { code: 'O0001', customer: 'C001', items: [['P001', 1], ['P003', 1]], status: 'CONFIRMED', day: 1 },
+  { code: 'O0001', customer: 'C001', items: [['P001', 1], ['P003', 1]], status: 'PAID', day: 1 },
   { code: 'O0002', customer: 'C002', items: [['P004', 2]], status: 'PENDING', day: 2 },
-  { code: 'O0003', customer: 'C003', items: [['P003', 1]], status: 'SHIPPED', day: 3 },
-  { code: 'O0004', customer: 'C001', items: [['P002', 1], ['P005', 2]], status: 'CONFIRMED', day: 4 },
+  { code: 'O0003', customer: 'C003', items: [['P003', 1]], status: 'PAID', day: 3 },
+  { code: 'O0004', customer: 'C001', items: [['P002', 1], ['P005', 2]], status: 'PAID', day: 4 },
   { code: 'O0005', customer: 'C002', items: [['P005', 1]], status: 'CANCELLED', day: 5 },
 ];
 
