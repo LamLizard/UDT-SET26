@@ -77,7 +77,7 @@ Gặp lỗi `MongoServerSelectionError ... ECONNREFUSED 127.0.0.1:27017` nghĩa 
 | POST | `/customers` | Thêm khách (body: `name`, `email`, `phone`, `address`) |
 | GET | `/customers?page=1&limit=20` | Danh sách khách hàng |
 | GET | `/customers/:id` | Lấy khách theo `_id` |
-| POST | `/orders` | Tạo đơn — chép **snapshot** `name` + `price` từ sản phẩm |
+| POST | `/orders` | Tạo đơn — chép **snapshot** `name` + `price`, kiểm tra và trừ tồn kho (thiếu hàng → `409 OUT_OF_STOCK`, rollback nếu lỗi giữa chừng) |
 | GET | `/orders?page=1&limit=10&status=PENDING` | Danh sách đơn + phân trang + `total` |
 | GET | `/orders/:code` | Lấy đơn theo `code` |
 | PATCH | `/orders/:code/status` | Cập nhật trạng thái (`PENDING`/`CONFIRMED`/`SHIPPED`/`CANCELLED`) |
@@ -97,7 +97,7 @@ curl -X POST http://127.0.0.1:3000/orders \
   }'
 ```
 
-Mã lỗi: `400` body sai / vi phạm `$jsonSchema` (code 121), `404` không tìm thấy, `409` trùng `code`/`email` (E11000).
+Mã lỗi: `400` body sai / vi phạm `$jsonSchema` (code 121), `404` không tìm thấy, `409` trùng `code`/`email` (E11000) hoặc thiếu tồn kho (`OUT_OF_STOCK`).
 
 ## Dữ liệu mẫu (seed)
 
@@ -105,9 +105,28 @@ Mã lỗi: `400` body sai / vi phạm `$jsonSchema` (code 121), `404` không tì
 - 3 khách hàng: `an.nguyen@example.com`, `binh.tran@example.com`, `cuong.le@example.com`
 - 5 đơn: `O0001` 165.000đ, `O0002` 100.000đ, `O0003` 45.000đ, `O0004` 300.000đ, `O0005` 25.000đ
 
-## Output mẫu của 3 báo cáo
+## Output mẫu của 3 báo cáo chính
 
-### 1. `GET /reports/orders`
+3 báo cáo chính theo yêu cầu: `GET /orders?page&limit` (phân trang + tổng số đơn), `GET /reports/orders`, `GET /reports/order-buckets`. Mục cuối (doanh thu theo khách) là phần **làm thêm**.
+
+### 1. `GET /orders?page=1&limit=2` — phân trang + tổng số đơn
+
+```json
+{
+  "page": 1,
+  "limit": 2,
+  "total": 5,
+  "totalPages": 3,
+  "data": [
+    { "code": "O0005" },
+    { "code": "O0004" }
+  ]
+}
+```
+
+(`data` rút gọn cho dễ đọc — mỗi phần tử thực chất là một document order đầy đủ, cùng dạng với `GET /orders/:code`.)
+
+### 2. `GET /reports/orders`
 
 ```json
 [
@@ -159,7 +178,7 @@ Mã lỗi: `400` body sai / vi phạm `$jsonSchema` (code 121), `404` không tì
 ]
 ```
 
-### 2. `GET /reports/order-buckets`
+### 3. `GET /reports/order-buckets`
 
 ```json
 [
@@ -192,7 +211,7 @@ Mã lỗi: `400` body sai / vi phạm `$jsonSchema` (code 121), `404` không tì
 ]
 ```
 
-### 3. `GET /reports/revenue-by-customer`
+### Báo cáo thêm: `GET /reports/revenue-by-customer`
 
 ```json
 [
@@ -247,6 +266,34 @@ Lý do: giá sản phẩm thay đổi theo thời gian. Nếu đơn hàng chỉ 
 
 `$lookup` trả về **mảng** `customer` (rỗng nếu không khớp), `$unwind` bung mảng đó thành object để dùng `$customer.name`. `preserveNullAndEmptyArrays: true` giữ lại đơn của khách đã bị xoá — nhờ vậy báo cáo không bị mất đơn. Báo cáo doanh thu theo khách dùng chiều ngược lại: `group` theo `customerId` trước rồi `$lookup` sang `customers` để lấy tên/email.
 
+### `$bucket` (phân nhóm đơn, không dùng `$switch`)
+
+Báo cáo phân loại dùng toán tử `$bucket`:
+
+```js
+{ $bucket: {
+    groupBy: '$total',
+    boundaries: [0, 50000, 100001],
+    default: '>100k',
+    output: { orderCount: { $sum: 1 }, revenue: { $sum: '$total' }, codes: { $push: '$code' } }
+} }
+```
+
+`$bucket` chia theo khoảng **nửa mở** `[cận dưới, cận trên)`: `[0, 50000)` là `<50k`, `[50000, 100001)` là `50k-100k`, còn lại rơi vào `default: '>100k'`. Vì cận trên là `100001` (không phải `100000`), đơn **đúng 100.000đ vẫn nằm trong nhóm `50k-100k`** — dùng `100000` làm boundary thì đơn 100k sẽ bị đẩy sang `>100k`.
+
+`$bucket` chỉ trả về những nhóm có đơn, và `_id` của mỗi nhóm là giá trị boundary (hoặc nhãn `default`), nên code map lại `_id → tên nhóm` và bù các nhóm rỗng (`orderCount: 0`) để response luôn đủ 3 nhóm.
+
+### Tồn kho và rollback khi tạo đơn
+
+`order-repository.create` kiểm tra tồn kho **trước khi** ghi đơn: mỗi item lấy `product.stock`, nếu `< quantity` thì trả `409 OUT_OF_STOCK` ngay (chưa ghi gì). Sau khi insert đơn, từng món được trừ bằng update có điều kiện:
+
+```js
+updateOne({ _id: item.productId, stock: { $gte: item.quantity } },
+          { $inc: { stock: -item.quantity } })
+```
+
+Điều kiện `stock >= quantity` nằm trong cùng một lệnh update nên nếu hai request đặt cùng lúc, request sau không thể trừ âm kho. Nếu giữa chừng có món bị hết hàng, code **hoàn lại** các món đã trừ (`$inc: +quantity`) rồi xoá đơn vừa tạo trước khi trả lỗi. Cách này không cần transaction — chạy được trên MongoDB standalone, vốn không hỗ trợ multi-document transaction.
+
 ### Unique index (vì sao trùng `code` bị chặn)
 
 Trong `scripts/setup-db.js`:
@@ -266,6 +313,7 @@ Ngoài ra `$jsonSchema` (validator `strict`, `validationAction: 'error'`) chặn
 
 1. `POST /orders` chép đúng snapshot `name` + `price` (đổi giá sau đó, đơn không đổi).
 2. Trùng `code` → `E11000` / HTTP 409; trong DB chỉ có 1 đơn.
-3. Đơn đúng 100.000đ rơi đúng nhóm `50k–100k`.
+3. Đơn đúng 100.000đ rơi đúng nhóm `50k–100k` (kiểm tra trên output `$bucket`).
 4. Phân trang `limit=2`: trang 1 và trang 2 đúng số đơn, `total`, `totalPages`, không trùng đơn.
-5. Báo cáo doanh thu theo khách bỏ qua đơn `CANCELLED` và khớp tổng với DB.
+5. Trừ kho: đặt vượt tồn kho → `409 OUT_OF_STOCK`, không tạo đơn và không đổi `stock`; đặt vừa đủ → `stock` giảm đúng, đơn sau bị chặn.
+6. Báo cáo doanh thu theo khách bỏ qua đơn `CANCELLED`: khớp tổng, khớp số đơn, và khớp **từng khách** với dữ liệu trong DB.

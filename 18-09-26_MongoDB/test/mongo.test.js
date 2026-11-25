@@ -174,17 +174,82 @@ test('Phan trang limit=2: trang 1 va trang 2 dung so don + total', async () => {
   assert.equal(codes1.some((code) => codes2.includes(code)), false, '2 trang khong duoc trung don');
 });
 
+test('Tru kho khi tao don: vuot ton kho -> 409 khong tao don; du hang -> tru dung', async () => {
+  const created = await api('/products', {
+    method: 'POST',
+    body: { code: 'T-STOCK', name: 'San pham test ton kho', price: 10000, stock: 1 },
+  });
+  assert.equal(created.status, 201);
+  assert.equal(created.body.stock, 1);
+
+  const cid = customerId('cuong.le@example.com');
+
+  // dat 2 mon nhung chi con 1 -> 409 OUT_OF_STOCK, khong tao don, khong tru kho
+  const tooMany = await api('/orders', {
+    method: 'POST',
+    body: { code: 'T-STOCK-OUT', customerId: cid, items: [{ code: 'T-STOCK', quantity: 2 }] },
+  });
+  assert.equal(tooMany.status, 409);
+  assert.equal(tooMany.body.error, 'OUT_OF_STOCK');
+  assert.equal(await db.orders().countDocuments({ code: 'T-STOCK-OUT' }), 0);
+
+  let product = await db.products().findOne({ code: 'T-STOCK' });
+  assert.equal(product.stock, 1, 'ton kho khong duoc thay doi khi don bi tu choi');
+
+  // dat 1 mon -> 201 va tru dung 1
+  const ok = await api('/orders', {
+    method: 'POST',
+    body: { code: 'T-STOCK-OK', customerId: cid, items: [{ code: 'T-STOCK', quantity: 1 }] },
+  });
+  assert.equal(ok.status, 201);
+
+  product = await db.products().findOne({ code: 'T-STOCK' });
+  assert.equal(product.stock, 0, 'phai tru dung so luong da dat');
+
+  // het hang -> don tiep theo bi tu choi
+  const again = await api('/orders', {
+    method: 'POST',
+    body: { code: 'T-STOCK-OK2', customerId: cid, items: [{ code: 'T-STOCK', quantity: 1 }] },
+  });
+  assert.equal(again.status, 409);
+  assert.equal(again.body.error, 'OUT_OF_STOCK');
+});
+
 test('Bao cao doanh thu theo khach hang bo qua don CANCELLED', async () => {
   const revenue = await api('/reports/revenue-by-customer');
   assert.equal(revenue.status, 200);
   assert.ok(revenue.body.length >= 3);
 
-  // tong doanh thu bao cao = tong total cua cac don khong CANCELLED
-  const cancelledCodes = ['O0005'];
   const validOrders = await db.orders().find({ status: { $ne: 'CANCELLED' } }).toArray();
-  const expected = validOrders.reduce((sum, o) => sum + o.total, 0);
-  const actual = revenue.body.reduce((sum, r) => sum + r.revenue, 0);
+  const cancelledOrders = await db.orders().find({ status: 'CANCELLED' }).toArray();
+  assert.ok(cancelledOrders.length >= 1, 'seed phai co it nhat 1 don CANCELLED');
 
-  assert.equal(actual, expected);
-  assert.ok(!cancelledCodes.some((code) => revenue.body.some((r) => r.codes?.includes(code))));
+  // 1) tong doanh thu = tong total cua don khong CANCELLED
+  const expectedTotal = validOrders.reduce((sum, o) => sum + o.total, 0);
+  assert.equal(revenue.body.reduce((sum, r) => sum + r.revenue, 0), expectedTotal);
+
+  // 2) tong so don cung phai khop
+  assert.equal(revenue.body.reduce((sum, r) => sum + r.orderCount, 0), validOrders.length);
+
+  // 3) tung khach: doanh thu phai bang tong don hop le cua khach do (khong cong don CANCELLED)
+  const expectedByCustomer = new Map();
+  for (const o of validOrders) {
+    const key = String(o.customerId);
+    expectedByCustomer.set(key, (expectedByCustomer.get(key) || 0) + o.total);
+  }
+
+  for (const row of revenue.body) {
+    const expected = expectedByCustomer.get(String(row.customerId));
+    assert.ok(expected !== undefined, `khach ${row.customerName} khong co don hop le nao`);
+    assert.equal(row.revenue, expected, `doanh thu cua ${row.customerName} sai`);
+  }
+
+  // 4) khach chi co don CANCELLED thi khong duoc xuat hien
+  const reportedIds = new Set(revenue.body.map((r) => String(r.customerId)));
+  for (const o of cancelledOrders) {
+    const cid = String(o.customerId);
+    if (!expectedByCustomer.has(cid)) {
+      assert.ok(!reportedIds.has(cid), 'khach chi co don CANCELLED khong duoc vao bao cao');
+    }
+  }
 });
