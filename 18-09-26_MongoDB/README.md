@@ -2,7 +2,6 @@
 
 Bài tập MongoDB: CRUD cơ bản + 3 báo cáo `aggregate` (snapshot giá, `$lookup`, unique index).
 
-- Môn: SWP391 / NodeJS + MongoDB — UDT-SET 2026
 - Ngày: 18-09-26 (buổi MongoDB)
 
 ## Yêu cầu môi trường
@@ -30,25 +29,6 @@ npm start                                # PORT có thể đổi qua biến môi
 File `.env` **không được commit** (đã nằm trong `.gitignore`), chỉ commit `.env.example`.
 
 Gặp lỗi `MongoServerSelectionError ... ECONNREFUSED 127.0.0.1:27017` nghĩa là MongoDB chưa chạy — bật MongoDB service (`net start MongoDB`) hoặc chạy `mongod --dbpath <thư mục dữ liệu>` trước, rồi chạy lại `npm run setup`.
-
-### Dùng MongoDB Atlas (cloud, không cần cài MongoDB)
-
-1. Tạo tài khoản tại <https://cloud.mongodb.com> → **Build a Database** → chọn **M0 (Free)** → provider AWS, region **ap-southeast-1 (Singapore)** → **Create Deployment**.
-2. Tạo **database user** (Security → Database Access): username + password, role **Atlas admin** (hoặc *Read and write to any database*), vì script cần tạo/xoá database.
-3. **Network Access** → **Add My Current IP Address** (để demo có thể dùng `0.0.0.0/0`).
-4. Cluster → **Connect** → **Drivers** → copy connection string dạng
-   `mongodb+srv://<user>:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority`
-5. Dán vào `.env` (chỉ đổi `MONGO_URL`, giữ `DB_NAME=shop_test`):
-
-```bash
-MONGO_URL=mongodb+srv://shopuser:MatKhau123@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority
-DB_NAME=shop_test
-PORT=3000
-```
-
-6. Chạy `npm run setup` → `npm test` → `npm start`. Test vẫn dùng database riêng `shop_test_e2e`.
-
-Lưu ý: mật khẩu có ký tự đặc biệt (`@ : / ? # % &`) phải percent-encode (`@` → `%40`) — dễ nhất là bật *Autogenerate Secure Password*, hoặc dùng chuỗi "standard connection string" trong hộp thoại Connect nếu mạng chặn DNS SRV.
 
 ## Cấu trúc thư mục
 
